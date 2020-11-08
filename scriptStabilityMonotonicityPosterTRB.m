@@ -2,7 +2,7 @@
 clear all
 close all
 path(genpath(cd),path);
-path(genpath('C:\Users\rlamotte\Documents\PhD\Matlab\simulations\github'),path);
+% path(genpath('C:\Users\rlamotte\Documents\PhD\Matlab\simulations\github'),path);
 
 set(groot, 'defaultAxesTickLabelInterpreter','latex');
 set(groot, 'defaultLegendInterpreter','latex');
@@ -21,7 +21,7 @@ set(figDelta,'Position',[0,0,screensize(3)/2,screensize(4)/4]);
 col=get(gca,'colororder');
 longcol=parula(10);
 
-dt=1/60;
+dt=5/60;
 departureTimes=-1.5:dt:1.5;
 Nt=length(departureTimes);
 Capacity=1/2;
@@ -82,12 +82,13 @@ revisionProtocol.fun=@(R,U,lambda)SmithRevisionProtocolExponent(R,U,lambda,revis
 % ylabel('Marginal utility rate');
 
 %% What about delta?
-% lambda=[0.001,0.01,0.1,1];
-% stdStar=[0, 0, 0, 0];
-% du=[-1,1];
-lambda=[0.01];
-stdStar=[0];
-du=[1];
+%lambda=[0.001,0.01,0.1,1];
+lambda=[0.01,0.1,1];
+stdStar=[0, 0, 0, 0];
+du=[-1,1];
+% lambda=[0.01];
+% stdStar=[0];
+% du=[1];
 for i=1:length(lambda)
     for indu=1:length(du)
         revisionProtocol.rate=lambda(i)/length(departureTimes);
@@ -97,45 +98,58 @@ for i=1:length(lambda)
         else
             tstar=0;
         end
-        settings.maxIter=5000/lambda(i);
+        settings.maxIter=1000/lambda(i);
         population=generateSParctan(tstar,(1-du(indu)/2)*ones(size(tstar)),(1+du(indu)/2)*ones(size(tstar)),ones(size(tstar)),4*ones(size(tstar)));
         [fS,hist]=runIterationsContinuumWhile(departureTimes,settings,congestion,population,revisionProtocol,[]);
         figure(figDelta)
-        subplot(1,2,1) % Potential gain
+        subplot(3,1,1) % Potential gain
+        tmp=cumsum(hist.shifts);
+        step=max(1,round(1/10/lambda(i)));
         if du(indu)>0
-            plot(cumsum(hist.shifts),hist.potGain,'-','Color',col(i,:));
+            plot(tmp(1:step:end),hist.potGain(1:step:end),'--','Color',col(i,:));
         else
-            plot(cumsum(hist.shifts),hist.potGain,'--','Color',col(i,:));
+            plot(tmp(1:step:end),hist.potGain(1:step:end),'-','Color',col(i,:));
         end
         hold on
         xlabel('Average number of updates (per user)');
         ylabel('Potential gain [\%]');
         title('(a)');
         xlim([0,5]);
-        subplot(1,2,2) % Potential gain
+        subplot(3,1,3) % Potential gain
         if du(indu)>0
-            semilogy(cumsum(hist.shifts),1:settings.maxIter,'-','Color',col(i,:));
+            semilogy(tmp(1:step:end),1:step:settings.maxIter,'--','Color',col(i,:));
         else
-            semilogy(cumsum(hist.shifts),1:settings.maxIter,'--','Color',col(i,:));
+            semilogy(tmp(1:step:end),1:step:settings.maxIter,'-','Color',col(i,:));
         end
         xlim([0,5]);
         hold on
         xlabel('Average number of updates (per user)');
         ylabel('Number of iterations');
-        title('(b)');
-        figure(3) % Cost decomposition
-        plot(cumsum(hist.shifts),-hist.TU,cumsum(hist.shifts),-hist.TU-hist.TotDelay,cumsum(hist.shifts),hist.TotDelay);
-        AnaCost=-population.UD{1}(0.5/Capacity)-population.UO{1}(0.5/Capacity);
-        AnaSP=-population.intUD{1}(0.5/Capacity)-population.intUO{1}(0.5/Capacity);
+        title('(c)');
+%         figure(3) % Cost decomposition
+%         plot(cumsum(hist.shifts),-hist.TU,cumsum(hist.shifts),-hist.TU-hist.TotDelay,cumsum(hist.shifts),hist.TotDelay);
+%         AnaCost=-population.UD{1}(0.5/Capacity)-population.UO{1}(0.5/Capacity);
+%         AnaSP=-population.intUD{1}(0.5/Capacity)-population.intUO{1}(0.5/Capacity);
+%         hold on
+%         plot([0,5],[AnaCost,AnaCost],'--','Color',col(1,:));
+%         plot([0,5],[AnaSP,AnaSP],'--','Color',col(2,:));
+%         plot([0,5],[AnaCost-AnaSP,AnaCost-AnaSP],'--','Color',col(3,:));
+%         xlabel('Average number of updates (per user)');
+        subplot(3,1,2)
+        if du(indu)>0
+            semilogy(tmp(1:step:end),hist.Lyap(1:step:end),'--','Color',col(i,:));
+        else
+            semilogy(tmp(1:step:end),hist.Lyap(1:step:end),'-','Color',col(i,:));
+        end
         hold on
-        plot([0,5],[AnaCost,AnaCost],'--','Color',col(1,:));
-        plot([0,5],[AnaSP,AnaSP],'--','Color',col(2,:));
-        plot([0,5],[AnaCost-AnaSP,AnaCost-AnaSP],'--','Color',col(3,:));
         xlabel('Average number of updates (per user)');
+        ylabel('Net gain');
+        title('(b)');
+        xlim([0,5]);
     end
 end
 figure(figDelta)
-subplot(1,2,1)
+subplot(3,1,1)
 legend({'$\lambda=10^{-3}$ (PM) ',...
     '$\lambda=10^{-3}$ (AM)',...
     '$\lambda=10^{-2}$ (PM)',...

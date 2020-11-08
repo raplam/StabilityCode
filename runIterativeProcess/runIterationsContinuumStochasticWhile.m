@@ -39,4 +39,6 @@ while cumShifts<=5 && iter<=settings.maxIter
 end
 finalState.t=t;
 finalState.n=n;
+if iter<=settings.maxIter
+history.R=history.R(:,:,1:(iter-1));
 end

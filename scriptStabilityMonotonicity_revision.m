@@ -8,18 +8,18 @@ set(groot, 'defaultAxesTickLabelInterpreter','latex');
 set(groot, 'defaultLegendInterpreter','latex');
 set(groot, 'defaultTextInterpreter','latex');
 
-screensize = get( groot, 'Screensize' );
+% screensize = get( groot, 'Screensize' );
 % figVerif=figure;
 % set(figVerif,'Position',[0,0,screensize(3)/2,0.42*screensize(4)]);
 % figCumPlots=figure;
 % set(figCumPlots,'Position',[0,0,screensize(3)/2,0.65*screensize(4)]);
-figDelta=figure(1);
-set(figDelta,'Position',[0,0,screensize(3)/2,screensize(4)]);
+% figDelta=figure(1);
+% set(figDelta,'Position',[0,0,screensize(3)/2,screensize(4)]);
 % figMetrics=figure;
 % set(figMetrics,'Position',[0,0,screensize(3)/2,.75*screensize(4)]);
 
-col=get(gca,'colororder');
-longcol=parula(10);
+% col=get(gca,'colororder');
+% longcol=parula(10);
 
 dt=1/60;
 departureTimes=-1.5:dt:1.5;
@@ -89,6 +89,9 @@ du=[-1,1];
 % lambda=[0.01];
 % stdStar=[0];
 % du=[1];
+AllCumShifts=cell(length(lambda),length(du));
+AllLyap=cell(length(lambda),length(du));
+AllIter=cell(length(lambda),length(du));
 for i=1:length(lambda)
     for indu=1:length(du)
         revisionProtocol.rate=lambda(i)/length(departureTimes);
@@ -101,32 +104,37 @@ for i=1:length(lambda)
         settings.maxIter=5000/lambda(i);
         population=generateSParctan(tstar,(1-du(indu)/2)*ones(size(tstar)),(1+du(indu)/2)*ones(size(tstar)),ones(size(tstar)),4*ones(size(tstar)));
         [fS,hist]=runIterationsContinuumWhile(departureTimes,settings,congestion,population,revisionProtocol,[]);
-        figure(figDelta)
-        subplot(3,1,1) % Potential gain
-        tmp=cumsum(hist.shifts);
+%         figure(figDelta)
+%         subplot(3,1,1) % Potential gain
         step=max(1,round(1/10/lambda(i)));
-        if du(indu)>0
-            plot(tmp(1:step:end),hist.potGain(1:step:end),'--','Color',col(i,:));
-        else
-            plot(tmp(1:step:end),hist.potGain(1:step:end),'-','Color',col(i,:));
-        end
-        hold on
-        xlabel('Average number of updates (per user)');
-        ylabel('Potential gain [\%]');
-        title('(a)');
-        xlim([0,5]);
-        subplot(3,1,3) % Potential gain
-        if du(indu)>0
-            semilogy(tmp(1:step:end),1:step:length(tmp),'--','Color',col(i,:));
-        else
-            semilogy(tmp(1:step:end),1:step:length(tmp),'-','Color',col(i,:));
-        end
-        xlim([0,5]);
-        hold on
-        xlabel('Average number of updates (per user)');
-        ylabel('Number of iterations');
-        title('(c)');
-%         figure(3) % Cost decomposition
+        tmp=cumsum(hist.shifts);
+        AllCumShifts{i,indu}=tmp(1:step:end);
+        AllLyap{i,indu}=hist.Lyap(1:step:end);
+        AllIter{i,indu}=1:step:length(tmp);
+%         tmp=cumsum(hist.shifts);
+%         step=max(1,round(1/10/lambda(i)));
+%         if du(indu)>0
+%             plot(tmp(1:step:end),hist.potGain(1:step:end),'--','Color',col(i,:));
+%         else
+%             plot(tmp(1:step:end),hist.potGain(1:step:end),'-','Color',col(i,:));
+%         end
+%         hold on
+%         xlabel('Average number of updates (per user)');
+%         ylabel('Potential gain [\%]');
+%         title('(a)');
+%         xlim([0,5]);
+%         subplot(3,1,3) % Potential gain
+%         if du(indu)>0
+%             semilogy(tmp(1:step:end),1:step:length(tmp),'--','Color',col(i,:));
+%         else
+%             semilogy(tmp(1:step:end),1:step:length(tmp),'-','Color',col(i,:));
+%         end
+%         xlim([0,5]);
+%         hold on
+%         xlabel('Average number of updates (per user)');
+%         ylabel('Number of iterations');
+%         title('(c)');
+% %         figure(3) % Cost decomposition
 %         plot(cumsum(hist.shifts),-hist.TU,cumsum(hist.shifts),-hist.TU-hist.TotDelay,cumsum(hist.shifts),hist.TotDelay);
 %         AnaCost=-population.UD{1}(0.5/Capacity)-population.UO{1}(0.5/Capacity);
 %         AnaSP=-population.intUD{1}(0.5/Capacity)-population.intUO{1}(0.5/Capacity);
@@ -135,37 +143,39 @@ for i=1:length(lambda)
 %         plot([0,5],[AnaSP,AnaSP],'--','Color',col(2,:));
 %         plot([0,5],[AnaCost-AnaSP,AnaCost-AnaSP],'--','Color',col(3,:));
 %         xlabel('Average number of updates (per user)');
-        subplot(3,1,2)
-        if du(indu)>0
-            semilogy(tmp(1:step:end),hist.Lyap(1:step:end),'--','Color',col(i,:));
-        else
-            semilogy(tmp(1:step:end),hist.Lyap(1:step:end),'-','Color',col(i,:));
-        end
-        hold on
-        xlabel('Average number of updates (per user)');
-        ylabel('Net gain');
-        title('(b)');
-        xlim([0,5]);
+%         subplot(3,1,2)
+%         if du(indu)>0
+%             semilogy(tmp(1:step:end),hist.Lyap(1:step:end),'--','Color',col(i,:));
+%         else
+%             semilogy(tmp(1:step:end),hist.Lyap(1:step:end),'-','Color',col(i,:));
+%         end
+%         hold on
+%         xlabel('Average number of updates (per user)');
+%         ylabel('Net gain');
+%         title('(b)');
+%         xlim([0,5]);
     end
 end
-figure(figDelta)
-subplot(3,1,1)
-legend({'$\lambda=10^{-3}$ (PM) ',...
-    '$\lambda=10^{-3}$ (AM)',...
-    '$\lambda=10^{-2}$ (PM)',...
-    '$\lambda=10^{-2}$ (AM)',...
-    '$\lambda=10^{-1}$ (PM)',...
-    '$\lambda=10^{-1}$ (AM)',...
-    '$\lambda=1$ (PM)',...
-    '$\lambda=1$ (AM)'},'fontsize',11,'NumColumns',2);
-subplot(3,1,2)
-ylim([10^(-8);10^(-1)])
-set(gca, 'ytick', [10^(-8);10^(-6);10^(-4);10^(-2)]);
-subplot(3,1,3)
-ylim([1;10^8])
-set(gca, 'ytick', [1;10^2;10^4;10^6;10^8]);
-savefig(figDelta,'figDelta.fig','compact');
-saveas(figDelta,'figDelta','epsc');
+% save('workspace_deterministe')
+save('workspace_deterministe_light', 'AllCumShifts','AllLyap','AllIter','lambda','du')
+% figure(figDelta)
+% subplot(3,1,1)
+% legend({'$\lambda=10^{-3}$ (PM) ',...
+%     '$\lambda=10^{-3}$ (AM)',...
+%     '$\lambda=10^{-2}$ (PM)',...
+%     '$\lambda=10^{-2}$ (AM)',...
+%     '$\lambda=10^{-1}$ (PM)',...
+%     '$\lambda=10^{-1}$ (AM)',...
+%     '$\lambda=1$ (PM)',...
+%     '$\lambda=1$ (AM)'},'fontsize',11,'NumColumns',2);
+% subplot(3,1,2)
+% ylim([10^(-8);10^(-1)])
+% set(gca, 'ytick', [10^(-8);10^(-6);10^(-4);10^(-2)]);
+% subplot(3,1,3)
+% ylim([1;10^8])
+% set(gca, 'ytick', [1;10^2;10^4;10^6;10^8]);
+% savefig(figDelta,'figDelta.fig','compact');
+% saveas(figDelta,'figDelta','epsc');
 
 %% Social cost decomposition
 % du=[1.5,1.5,-1.5];

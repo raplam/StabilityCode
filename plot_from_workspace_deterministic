@@ -1,0 +1,10 @@
+clear all
+close all
+
+
+screensize = get( groot, 'Screensize' );
+figDelta=figure(1);
+set(figDelta,'Position',[0,0,screensize(3)/2,screensize(4)]);
+
+col=get(gca,'colororder');
+longcol=parula(10);

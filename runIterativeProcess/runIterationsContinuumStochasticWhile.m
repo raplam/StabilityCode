@@ -5,6 +5,7 @@ Ns=length(congestion.S);
 history.TU=NaN(1,settings.maxIter);               % history of total utility
 history.potGain=NaN(1,settings.maxIter);          % Potential Gain history
 history.shifts=NaN(1,settings.maxIter);          % history of utilities
+history.Lyap=NaN(1,settings.maxIter);
 
 if isempty(R)
     R=ones(population.N,Nt)/population.N/Nt; %matrix indicating which proportion of each of the N classes depart at each of the Nt times. Initially random (but normalized)
@@ -27,6 +28,9 @@ while cumShifts<=5 && iter<=settings.maxIter
     Utilities=mean(U,3);
     history.potGain(iter)=100*sum(sum(R.*(repmat(max(Utilities,[],2),1,Nt)-Utilities)./abs(Utilities),2));
     history.TU(iter)=sum(sum(R.*Utilities));
+    psi=1/2*max(zeros(Nt,Nt),repmat(Utilities,Nt,1)-repmat(Utilities',1,Nt)).^2;
+    history.Lyap(iter)=sum(sum(psi.*repmat(R',1,Nt)))/Nt;
+    
     % Run_script_making_plots
     if strcmp(settings.display,'on')||(strcmp(settings.display,'final')&& iter==settings.maxIter)
         fprintf('iteration %i\n',iter);

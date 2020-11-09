@@ -1,0 +1,5 @@
+clear all
+close all
+load("workspace_stochasticity")
+for ind_std=1:length(std)
+    for ind_w=1:length(w)

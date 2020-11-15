@@ -31,13 +31,13 @@ legend({'Stochastic','Deterministic'});
 
 figure(3)
 subplot(121)
-title('(a)');
 plot(t_stoch,n_stoch);
 xlabel('Time [h]');
 ylabel('Queue length');
+title('(a)');
 
 subplot(122)
-title('(b)');
 plot(departureTimes,cumsum(R_stoch),'r');
 xlabel('Time [h]');
 ylabel('Cumulative departures');
+title('(b)');

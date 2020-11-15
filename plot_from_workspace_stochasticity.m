@@ -1,5 +1,9 @@
 clear all
 close all
+set(groot, 'defaultAxesTickLabelInterpreter','latex');
+set(groot, 'defaultLegendInterpreter','latex');
+set(groot, 'defaultTextInterpreter','latex');
+
 load("workspace_stochasticity_light")
 for ind_std=1:length(std)
     for ind_w=1:length(w)
@@ -26,11 +30,14 @@ subplot(length(std),length(w),1)
 legend({'Stochastic','Deterministic'});
 
 figure(3)
+subplot(121)
+title('(a)');
 plot(t_stoch,n_stoch);
-xlabel('Time');
+xlabel('Time [h]');
 ylabel('Queue length');
 
-figure(4)
+subplot(122)
+title('(b)');
 plot(departureTimes,cumsum(R_stoch),'r');
-xlabel('Time');
+xlabel('Time [h]');
 ylabel('Cumulative departures');

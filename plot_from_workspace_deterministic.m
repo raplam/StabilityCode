@@ -1,7 +1,10 @@
 clear all
 close all
 
-% load('workspace_deterministe')
+set(groot, 'defaultAxesTickLabelInterpreter','latex');
+set(groot, 'defaultLegendInterpreter','latex');
+set(groot, 'defaultTextInterpreter','latex');
+
 load('workspace_deterministe_light', 'AllCumShifts','AllLyap','AllIter','lambda','du')
 
 screensize = get( groot, 'Screensize' );
@@ -55,6 +58,3 @@ xlabel('Average number of updates (per user)');
 ylabel('Number of iterations');
 title('(b)');
 set(gca, 'ytick', [1;10^2;10^4;10^6;10^8]);
-
-savefig(figDelta,'figDelta.fig','compact');
-saveas(figDelta,'figDelta','epsc');

@@ -4,7 +4,7 @@ set(groot, 'defaultAxesTickLabelInterpreter','latex');
 set(groot, 'defaultLegendInterpreter','latex');
 set(groot, 'defaultTextInterpreter','latex');
 
-load("workspace_stochasticity_light")
+load("workspace_stochasticity_light2")
 for ind_std=1:length(std)
     for ind_w=1:length(w)
         figure(2)
@@ -31,13 +31,38 @@ legend({'Stochastic','Deterministic'});
 
 figure(3)
 subplot(121)
-plot(t_stoch,n_stoch);
-xlabel('Time [h]');
-ylabel('Queue length');
-title('(a)');
-
-subplot(122)
 plot(departureTimes,cumsum(R_stoch),'r');
+hold on
+plot(ta_stoch(:,[1,11,21]),cumsum(R_stoch),'k')
 xlabel('Time [h]');
-ylabel('Cumulative departures');
+ylabel('Cumulative number of users');
+title('(a)');
+xlim([-1.5,1.5]);
+ ylim([0,1]);
+legend({'Departures','Arrivals'});
+path(genpath(cd),path);
+
+std=0.2;
+w=1;
+tstar=0;
+Na=10^3;
+population=generateSParctan(tstar,0.5,1.5,1,w);%
+Capacity=0.5*(1-std:std:1+std);
+
+for i=1:length(Capacity)
+    congestion=generateBottleneck(Capacity(i));
+    congestion=computeEquilibriumBottleneck(Na,congestion,population);
+    figure(3)
+    subplot(122)
+    [t,ind]=sort(congestion.eqDepartures);
+    plot(congestion.eqArrivals(ind),1/Na:1/Na:1,'-k');
+    hold on
+    plot(t,1/Na:1/Na:1,'-r');
+end
+ xlim([-1.5,1.5]);
+ ylim([0,1]);
+ xlabel('Time [h]');
+ylabel('Cumulative number of users');
 title('(b)');
+
+

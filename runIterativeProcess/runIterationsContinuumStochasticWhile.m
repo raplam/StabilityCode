@@ -18,9 +18,11 @@ while cumShifts<=5 && iter<=settings.maxIter
     % Run dynamics
     t=NaN(Ns,2*Nt);
     n=NaN(Ns,2*Nt);
+    ta=NaN(Ns,Nt);
     U=zeros(population.N,Nt,Ns);
     for inds=1:Ns
-        [Utmp,ttmp,ntmp,~,~]=BottleneckDynamicsAndUtilityEvaluation(departureTimes,R,congestion.S(inds),population);
+        [Utmp,ttmp,ntmp,avgArrivalTimes,CumUsers]=BottleneckDynamicsAndUtilityEvaluation(departureTimes,R,congestion.S(inds),population);
+        ta(inds,:)=avgArrivalTimes;
         t(inds,1:length(ttmp))=ttmp;
         n(inds,1:length(ntmp))=ntmp;
         U(:,:,inds)=reshape(Utmp,[population.N,Nt,1]);
@@ -43,6 +45,7 @@ while cumShifts<=5 && iter<=settings.maxIter
 end
 finalState.t=t;
 finalState.n=n;
+finalState.ta=ta;
 if iter<=settings.maxIter
 history.R=history.R(:,:,1:(iter-1));
 end

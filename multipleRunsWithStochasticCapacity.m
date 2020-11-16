@@ -13,7 +13,7 @@ N=1;
 
 % Define some technical settings
 lambda=10^(-2);
-settings.maxIter=10^6;
+settings.maxIter=2*10^6;
 settings.display='off'; %'on' 'off' 'final'
 settings.additionalPlots='off';
 settings.knownEq=0; % should only set to a positive value if Iryo's method apply (morning commute with identical alpha).
@@ -79,6 +79,7 @@ for ind_std=1:length(std)
              t_stoch=finalState.t';
              n_stoch=finalState.n';
              R_stoch=hist.R(:,:,end);
+             ta_stoch=finalState.ta';
         end
         
         for i=1:10:length(Capacity)
@@ -99,7 +100,11 @@ for ind_std=1:length(std)
         end
     end
 end
+
+
+
+
 % subplot(length(std),length(w),1)
 % legend({'Stochastic','Deterministic'});
 % save("workspace_stochasticity")
-save("workspace_stochasticity_light",'std','w','AllCumShifts','AllLyap','AllCumShiftsDet','AllLyapDet','t_stoch','n_stoch','R_stoch','departureTimes','Capacity')
+save("workspace_stochasticity_light2",'std','w','AllCumShifts','AllLyap','AllCumShiftsDet','AllLyapDet','t_stoch','n_stoch','R_stoch','ta_stoch','departureTimes','Capacity')

@@ -60,7 +60,7 @@ legend({'$\lambda=10^{-3}$ (PM) ',...
 subplot(3,1,2)
 xlabel('Average number of updates (per user)');
 ylabel('Net gain');
-title('(a)');
+title('(b)');
 xlim([0,5]);
 ylim([10^(-8);10^(-1)])
 set(gca, 'ytick', [10^(-8);10^(-6);10^(-4);10^(-2)]);
@@ -70,5 +70,5 @@ xlim([0,5]);
 ylim([1;10^8])
 xlabel('Average number of updates (per user)');
 ylabel('Number of iterations');
-title('(b)');
+title('(c)');
 set(gca, 'ytick', [1;10^2;10^4;10^6;10^8]);

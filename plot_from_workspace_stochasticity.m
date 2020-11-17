@@ -11,10 +11,10 @@ for ind_std=1:length(std)
         subplot(length(std),length(w),ind_w+(ind_std-1)*length(w))
         semilogy(AllCumShifts{ind_std,ind_w},AllLyap{ind_std,ind_w},'r');
         hold on
-        xlabel('Average decision updates');
+        xlabel('Average number of updates (per user)');
         ylabel('Net gain');
         xlim([0,5]);
-        title(['$w=',num2str(w(ind_w)),', \Delta S=\pm',num2str(100*std(ind_std)),'\%$']);
+        title(['$w=',num2str(w(ind_w)),'\:\rm{h}^{-1}, \Delta S/s=',num2str(100*std(ind_std)),'\%$']);
         for i=1:10:length(Capacity)
             figure(2)
             subplot(length(std),length(w),ind_w+(ind_std-1)*length(w))

@@ -5,7 +5,7 @@ set(groot, 'defaultAxesTickLabelInterpreter','latex');
 set(groot, 'defaultLegendInterpreter','latex');
 set(groot, 'defaultTextInterpreter','latex');
 
-load('workspace_deterministe_light', 'AllCumShifts','AllLyap','AllIter','lambda','du')
+load('workspace_deterministe_light2', 'AllCumShifts','AllLyap','AllIter','AllPotGain','lambda','du')
 
 screensize = get( groot, 'Screensize' );
 figDelta=figure(1);
@@ -17,7 +17,15 @@ longcol=parula(10);
 for i=1:length(lambda)
     for indu=1:length(du)
         figure(figDelta)
-        subplot(1,2,1) % Net gain
+        subplot(3,1,1) % Net gain
+        if du(indu)>0
+            plot(AllCumShifts{i,indu},AllPotGain{i,indu},'--','Color',col(i,:));
+        else
+            plot(AllCumShifts{i,indu},AllPotGain{i,indu},'-','Color',col(i,:));
+        end
+        hold on
+        
+        subplot(3,1,2) % Net gain
         if du(indu)>0
             semilogy(AllCumShifts{i,indu},AllLyap{i,indu},'--','Color',col(i,:));
         else
@@ -25,7 +33,7 @@ for i=1:length(lambda)
         end
         hold on
 
-        subplot(1,2,2) % Number of iterations
+        subplot(3,1,3) % Number of iterations
         if du(indu)>0
             semilogy(AllCumShifts{i,indu},AllIter{i,indu},'--','Color',col(i,:));
         else
@@ -35,13 +43,11 @@ for i=1:length(lambda)
     end
 end
 figure(figDelta)
-subplot(1,2,1)
+subplot(3,1,1)
 xlabel('Average number of updates (per user)');
-ylabel('Net gain');
+ylabel('Potential gain [\%]');
 title('(a)');
 xlim([0,5]);
-ylim([10^(-8);10^(-1)])
-set(gca, 'ytick', [10^(-8);10^(-6);10^(-4);10^(-2)]);
 legend({'$\lambda=10^{-3}$ (PM) ',...
     '$\lambda=10^{-3}$ (AM)',...
     '$\lambda=10^{-2}$ (PM)',...
@@ -51,7 +57,15 @@ legend({'$\lambda=10^{-3}$ (PM) ',...
     '$\lambda=1$ (PM)',...
     '$\lambda=1$ (AM)'},'fontsize',11,'NumColumns',2);
 
-subplot(1,2,2)
+subplot(3,1,2)
+xlabel('Average number of updates (per user)');
+ylabel('Net gain');
+title('(a)');
+xlim([0,5]);
+ylim([10^(-8);10^(-1)])
+set(gca, 'ytick', [10^(-8);10^(-6);10^(-4);10^(-2)]);
+
+subplot(3,1,3)
 xlim([0,5]);
 ylim([1;10^8])
 xlabel('Average number of updates (per user)');

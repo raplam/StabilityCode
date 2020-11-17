@@ -92,6 +92,7 @@ du=[-1,1];
 AllCumShifts=cell(length(lambda),length(du));
 AllLyap=cell(length(lambda),length(du));
 AllIter=cell(length(lambda),length(du));
+AllPotGain=cell(length(lambda),length(du));
 for i=1:length(lambda)
     for indu=1:length(du)
         revisionProtocol.rate=lambda(i)/length(departureTimes);
@@ -110,6 +111,7 @@ for i=1:length(lambda)
         tmp=cumsum(hist.shifts);
         AllCumShifts{i,indu}=tmp(1:step:end);
         AllLyap{i,indu}=hist.Lyap(1:step:end);
+        AllPotGain{i,indu}=hist.potGain(1:step:end);
         AllIter{i,indu}=1:step:length(tmp);
 %         tmp=cumsum(hist.shifts);
 %         step=max(1,round(1/10/lambda(i)));
@@ -157,7 +159,7 @@ for i=1:length(lambda)
     end
 end
 % save('workspace_deterministe')
-save('workspace_deterministe_light', 'AllCumShifts','AllLyap','AllIter','lambda','du')
+save('workspace_deterministe_light2', 'AllCumShifts','AllLyap','AllIter','lambda','AllPotGain','du')
 % figure(figDelta)
 % subplot(3,1,1)
 % legend({'$\lambda=10^{-3}$ (PM) ',...

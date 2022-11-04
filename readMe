@@ -1,0 +1,5 @@
+This repository contains the code developped for the following article:
+Lamotte, R., de Palma, A., & Geroliminis, N. (2022). Impacts of Metering-Based Dynamic Priority Schemes. Transportation Science, 56(2), 358–380.
+https://doi.org/10.1287/trsc.2021.1091
+
+The publication of this paper occured after I left academia and I never found the time to clean the code for the public. I still make it open, in case it can help.
